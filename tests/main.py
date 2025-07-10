@@ -58,7 +58,7 @@ def get_argparser():
 
     parser.add_argument('--run_group', type=str, required=True)
     parser.add_argument('--normalizer_type', type=str, default='ant_preset',
-                        choices=['off', 'garage_ex', 'consistent', 'manual', 'half_cheetah_preset', 'ant_preset', 'humanoid_preset'])
+                        choices=['off', 'garage_ex', 'consistent', 'manual', 'half_cheetah_preset', 'ant_preset', 'humanoid_preset', 'walker_preset', 'quadruped_preset', 'jaco_preset'])
     parser.add_argument('--normalizer_obs_alpha', type=float, default=0.001)
     parser.add_argument('--normalized_env_eval_update', type=int, default=0)
     parser.add_argument('--normalizer_mean', type=float, default=0)
@@ -67,7 +67,7 @@ def get_argparser():
     parser.add_argument('--maze_type', type=str, default='square')
     parser.add_argument('--maze_start_random_range', type=float, default=None)
     parser.add_argument('--env', type=str, default='ant',
-                        choices=['half_cheetah', 'ant', 'humanoid'])
+                        choices=['half_cheetah', 'ant', 'humanoid', 'walker', 'quadruped', 'jaco'])
 
     parser.add_argument('--mujoco_render_hw', type=int, default=100)
 
@@ -209,6 +209,9 @@ def get_exp_name(hack_slurm_job_id_override=None):
         'humanoid': 'HUM',
         'humanoid_goal': 'HUMG',
         'humanoid_nav_prime': 'HUMNP',
+        'walker': 'WAL',
+        'quadruped': 'QUA',
+        'jaco': 'JAC',  
     }, log_only_if_changed=False)
 
     add_name('clr', 'common_lr', log_only_if_changed=False)
@@ -359,6 +362,24 @@ def main(ctxt=None):
     elif args.env == 'humanoid':
         from envs.mujoco.humanoid_env import HumanoidEnv
         env = HumanoidEnv(
+            done_allowing_step_unit=None,
+            render_hw=args.mujoco_render_hw,
+        )
+    elif args.env == 'walker':
+        from envs.mujoco.walker_env import WalkerEnv
+        env = WalkerEnv(
+            done_allowing_step_unit=None,
+            render_hw=args.mujoco_render_hw,
+        )
+    elif args.env == 'quadruped':
+        from envs.mujoco.quadruped_env import QuadrupedEnv
+        env = QuadrupedEnv(
+            done_allowing_step_unit=None,
+            render_hw=args.mujoco_render_hw,
+        )
+    elif args.env == 'jaco':
+        from envs.mujoco.jaco_env import JacoEnv
+        env = JacoEnv(
             done_allowing_step_unit=None,
             render_hw=args.mujoco_render_hw,
         )
